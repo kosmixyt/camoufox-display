@@ -60,7 +60,7 @@ async def AsyncNewBrowser(
 async def AsyncNewBrowser(
     playwright: Playwright,
     *,
-    headless: Optional[Union[bool, Literal['virtual']]] = None,
+    headless: Optional[Union[bool, Literal['virtual'], int]] = None,
     from_options: Optional[Dict[str, Any]] = None,
     persistent_context: bool = False,
     debug: Optional[bool] = None,
@@ -80,6 +80,10 @@ async def AsyncNewBrowser(
     if headless == 'virtual':
         virtual_display = VirtualDisplay(debug=debug)
         kwargs['virtual_display'] = virtual_display.get()
+        headless = False
+    elif isinstance(headless, int):
+        virtual_display = None
+        kwargs['virtual_display'] = str(f":{headless}")
         headless = False
     else:
         virtual_display = None
